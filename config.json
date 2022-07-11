@@ -1,0 +1,12 @@
+{
+  "token": "token",
+  "prefix": "!",
+  
+  "embed_color": "#ffc200",
+  
+  "debug": true,
+
+  "logs_guild": "995369565775204483",
+  "logs_channel": "995369952154505338",
+  "owner_id": "523451347018973184"
+}
