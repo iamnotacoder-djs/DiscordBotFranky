@@ -3,6 +3,9 @@
 
 Фактически исходный код данного бота является доп. материалом для [видео](https://youtu.be/vYpp1i3hHxc) об использовании хандлера команд представленном в [DiscordBotIda](https://github.com/idaspin/DiscordBotIda).
 
+#### Пригласить бота
+https://discord.com/oauth2/authorize?client_id=995368585927086222&scope=applications.commands
+
 ## Установка
 - Загрузить репозиторий `git clone https://github.com/idaspin/DiscordBotFranky.git`
 - В папке проекта инициализировать node-проект и загрузить модули `npm init`, `npm i discord.js@13.8.1 fs`
