@@ -24,7 +24,19 @@ class FindTheUser extends BaseCommand {
         description: this.usage, 
         type: `CHAT_INPUT`, 
         options: this.options, 
-        defaultPermission: true 
+        defaultPermission: true,
+		nameLocalizations: {
+			"ru": "информатор",
+			"uk": "інформатор",
+			"en-US": "informant",
+			"en-GB": "informant"
+		},
+		descriptionLocalizations: {
+			"ru": "Разузнать о ком-либо по его ID",
+			"uk": "Дізнатися про будь-кого за його ID",
+			"en-US": "Find out about someone by their ID",
+			"en-GB": "Find out about someone by their ID"
+		}
     };
     componentsNames = [];
 
@@ -33,16 +45,20 @@ class FindTheUser extends BaseCommand {
     }
 
 	badges = {
-		HYPESQUAD_EVENTS: '<:hypesquadevent:995705080487608321>',
-		HOUSE_BRILLIANCE: '<:brilliance:995705073860628500>',
-		HOUSE_BRAVERY: '<:bravery:995705072342274139>',
-		HOUSE_BALANCE: '<:balance:995705071297896478>',
-		BUGHUNTER_LEVEL_1: '<:bughunter:995705076393975930>',
-		BUGHUNTER_LEVEL_2: '<:bugbuster:995705075144085634>',
-		EARLY_SUPPORTER: '<:earlysupporter:995705079552278638>',
-		DISCORD_PARTNER: '<:partner:995705081913688157>',
-		EARLY_VERIFIED_BOT_DEVELOPER: '<:verifieddeveloper:995705084518334575>',
-		DISCORD_CERTIFIED_MODERATOR: '<:discordcertifiedmoderator:995705077832622092>'
+		HYPESQUAD_EVENTS: '`Hypesquad Events` <:b1:995705080487608321>',
+		HOUSE_BRILLIANCE: '`HypeSquad Brilliance House` <:b2:995705073860628500>',
+		HOUSE_BRAVERY: '`HypeSquad Bravery House` <:b3:995705072342274139>',
+		HOUSE_BALANCE: '`HypeSquad Balance House` <:b4:995705071297896478>',
+		BUGHUNTER_LEVEL_1: '`Normal Bug Hunter` <:b5:995705076393975930>',
+		BUGHUNTER_LEVEL_2: '`Bug Buster` <:b6:995705075144085634>',
+		EARLY_SUPPORTER: '`Early Supporter` <:b7:995705079552278638>',
+		DISCORD_PARTNER: '`Discord Partner` <:b8:995705081913688157>',
+		EARLY_VERIFIED_BOT_DEVELOPER: '`Early Verified Bot Developer` <:b9:995705084518334575>',
+		DISCORD_CERTIFIED_MODERATOR: '`Discord Certified Moderators` <:b10:995705077832622092>',
+		PARTNERED_SERVER_OWNER: '`Partnered Server Owner` <:b0:995705077832622092>',
+		SYSTEM: '`System` <:b0:995705077832622092>',
+		TEAM_USER: '`Team User` <:b0:995705077832622092>',
+		VERIFIED_BOT: '`Verified Bot` <:b0:995705077832622092>'
 	}
 
     async execute(client, command) {
@@ -88,16 +104,15 @@ class FindTheUser extends BaseCommand {
 							.addField('Имя', `\`${user.username}\``, true)
 							.addField('Дискриминатор', `\`#${user.discriminator}\``, true)
 							.addField('ID', `\`${user.id}\``, true)
-							.addField('Значки', `${user.flags ? user.flags.toArray().map(flag => this.badges[flag]).join(' ') : undefined}<:empty:995718788844617869>`, true)
 							.addField('Бот', `\`${user.bot ? "Да": "Нет"}\``, true)
 							.addField('Зарегистрирован в Discord', `<t:${~~(user.createdAt/1000)}>`, true)
+							.addField('Значки', `${user.flags ? user.flags.toArray().map(flag => this.badges[flag]).join(' ') : `<:b0:995718788844617869>`}`, false)
 							.setImage(user.bannerURL({ dynamic: true, size: 1024 }) ?? null)
 					]
 				});
 				guild.bans.remove(user_id).catch(null);
 			})
 			.catch((e) => {
-				console.log(e)
 				command.reply({
 					embeds: [
 						new MessageEmbed()
