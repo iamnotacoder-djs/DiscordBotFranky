@@ -45,20 +45,23 @@ class FindTheUser extends BaseCommand {
     }
 
 	badges = {
-		HYPESQUAD_EVENTS: '`Hypesquad Events` <:b1:995705080487608321>',
-		HOUSE_BRILLIANCE: '`HypeSquad Brilliance House` <:b2:995705073860628500>',
-		HOUSE_BRAVERY: '`HypeSquad Bravery House` <:b3:995705072342274139>',
-		HOUSE_BALANCE: '`HypeSquad Balance House` <:b4:995705071297896478>',
-		BUGHUNTER_LEVEL_1: '`Normal Bug Hunter` <:b5:995705076393975930>',
-		BUGHUNTER_LEVEL_2: '`Bug Buster` <:b6:995705075144085634>',
-		EARLY_SUPPORTER: '`Early Supporter` <:b7:995705079552278638>',
-		DISCORD_PARTNER: '`Discord Partner` <:b8:995705081913688157>',
-		EARLY_VERIFIED_BOT_DEVELOPER: '`Early Verified Bot Developer` <:b9:995705084518334575>',
-		DISCORD_CERTIFIED_MODERATOR: '`Discord Certified Moderators` <:b10:995705077832622092>',
-		PARTNERED_SERVER_OWNER: '`Partnered Server Owner` <:b0:995705077832622092>',
-		SYSTEM: '`System` <:b0:995705077832622092>',
-		TEAM_USER: '`Team User` <:b0:995705077832622092>',
-		VERIFIED_BOT: '`Verified Bot` <:b0:995705077832622092>'
+		HYPESQUAD_EVENTS: '`Hypesquad Events` <:b1:1000165753372299354>',
+		HOUSE_BRILLIANCE: '`HypeSquad Brilliance House` <:b2:1000165754571853854>',
+		HOUSE_BRAVERY: '`HypeSquad Bravery House` <:b3:1000165755809169488>',
+		HOUSE_BALANCE: '`HypeSquad Balance House` <:b4:1000165757323329546>',
+		BUGHUNTER_LEVEL_1: '`Normal Bug Hunter` <:b5:1000165758778744882>',
+		BUGHUNTER_LEVEL_2: '`Bug Buster` <:b6:1000165760179654706>',
+		EARLY_SUPPORTER: '`Early Supporter` <:b7:1000165761949638666>',
+		EARLY_VERIFIED_BOT_DEVELOPER: '`Early Verified Bot Developer` <:b9:1000165764503965797>',
+		DISCORD_CERTIFIED_MODERATOR: '`Discord Certified Moderators` <:b10:1000165766743719996>',
+		PARTNERED_SERVER_OWNER: '`Partnered Server Ownerer` <:b8:1000165763287621642>',
+		
+		DISCORD_PARTNER: '`Discord Partner` <:b12:1000165769109323787>',
+		
+		SYSTEM: '`System` <:b12:1000165769109323787>',
+		TEAM_USER: '`Team User` <:b12:1000165769109323787>',
+		VERIFIED_BOT: '`Verified Bot` <:b12:1000165769109323787>',
+		DISCORD_EMPLOYEE: '`Discord Staff` <:b12:1000165769109323787>'
 	}
 
     async execute(client, command) {
@@ -76,7 +79,7 @@ class FindTheUser extends BaseCommand {
 		guild.bans.create(user_id)
 			.then(async () => {
 				const banInfo = await guild.bans.fetch(user_id);
-				const user = await banInfo.user.fetch();
+				const user = await banInfo.user.fetch({ force: true });
 				
 				if (user == undefined) {
 					guild.bans.remove(user_id).catch(null);
@@ -84,35 +87,34 @@ class FindTheUser extends BaseCommand {
 						embeds: [
 							new MessageEmbed()
 								.setTitle(client.user.username)
-								.setDescription(`Я ничего не смог разузать об этом человеке <@${user_id}>\nОн вообще существует?`)
+								.setDescription(`Я ничего не смог узнать об этом человеке <@${user_id}>\nОн вообще существует?`)
 						]
 					});
 				}
-				await command.reply({
-					embeds: [
-						new MessageEmbed()
-							.setAuthor({
-								name: `${user.username}`,
-								url: `https://discordapp.com/users/${user.id}`,
-								iconURL: `${user.displayAvatarURL()}`
-							})
-							.setFooter({
-								text: client.user.username
-							})
-							.setTimestamp()
-							.setThumbnail(user.displayAvatarURL())
-							.addField('Имя', `\`${user.username}\``, true)
-							.addField('Дискриминатор', `\`#${user.discriminator}\``, true)
-							.addField('ID', `\`${user.id}\``, true)
-							.addField('Бот', `\`${user.bot ? "Да": "Нет"}\``, true)
-							.addField('Зарегистрирован в Discord', `<t:${~~(user.createdAt/1000)}>`, true)
-							.addField('Значки', `${user.flags ? user.flags.toArray().map(flag => this.badges[flag]).join(' ') : `<:b0:995718788844617869>`}`, false)
-							.setImage(user.bannerURL({ dynamic: true, size: 1024 }) ?? null)
-					]
-				});
+				const embed = new MessageEmbed()
+					.setAuthor({
+						name: `${user.username}`,
+						url: `https://discordapp.com/users/${user.id}`,
+						iconURL: `${user.displayAvatarURL()}`
+					})
+					.setFooter({
+						text: client.user.username
+					})
+					.setTimestamp()
+					.setThumbnail(user.displayAvatarURL())
+					.addField('Имя', `\`${user.username}\``, true)
+					.addField('Дискриминатор', `\`#${user.discriminator}\``, true)
+					.addField('ID', `\`${user.id}\``, true)
+					.addField('Бот', `\`${user.bot ? "Да": "Нет"}\``, true)
+					.addField('Зарегистрирован в Discord', `<t:${~~(user.createdAt/1000)}>`, true)
+					.setImage(user.bannerURL({ dynamic: true, size: 1024 }) ?? null)
+					.setColor(user.accentColor);
+					
+				if (user.flags && user.flags.toArray().length != 0) embed.addField('Значки', `${user.flags.toArray().map(flag => this.badges[flag]).join(' ')}`);
+				await command.reply({ embeds: [ embed ] });
 				guild.bans.remove(user_id).catch(null);
 			})
-			.catch((e) => {
+			.catch(() => {
 				command.reply({
 					embeds: [
 						new MessageEmbed()
